@@ -17,9 +17,9 @@
 		public string Codigo_Clasificacion { get; set; } = string.Empty;
 		public string Clasificacion { get; set; } = string.Empty;
 		public decimal Id_Ref1 { get; set; }
-		public string Codigo_Ref1 { get; set; } = string.Empty;
+		public string Descripcion_Ref1 { get; set; } = string.Empty;
 		public decimal Id_ref2 { get; set; }
-		public string Codigo_Ref2 { get; set; } = string.Empty;
+		public string Descripcion_Ref2 { get; set; } = string.Empty;
 		public decimal Rhdot_Ene { get; set; }
 		public decimal Rhdot_Feb { get; set; }
 		public decimal Rhdot_Mar { get; set; }
