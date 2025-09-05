@@ -53,7 +53,8 @@ namespace PlanillaUnicaApi
 			services.AddScoped<IRepositorioClasificacion, RepositorioClasificacion>();
 			services.AddScoped<IRepositorioReferencia1, RepositorioReferencia1>();
 			services.AddScoped<IRepositorioReferencia2, RepositorioReferencia2>();
-			
+			services.AddScoped<IRepositorioAsistencia, RepositorioAsistencia>();
+
 			services.AddAutoMapper(configuration =>
 			{
 				configuration.CreateMap<Rh_DotacionDto, Rh_Dotacion>();
