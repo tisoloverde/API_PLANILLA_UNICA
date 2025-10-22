@@ -53,5 +53,35 @@ namespace PlanillaUnicaApi.Controllers
 			return Results.Ok(respuesta);
 
 		}
+
+		/// <summary>
+		/// Método que permite crear un nuevo registro de dotación 
+		/// </summary>
+		/// <param name="dotacionDTO"></param>
+		/// <returns></returns>
+		[HttpPut]
+		[Route("NewAsistencia")]
+		public IActionResult NewDotacion([FromBody] List<AsistenciaRegistroDto> asistenciaDTO)
+		{
+			Resultado_ExecDto resultado = new Resultado_ExecDto();
+			if (!ModelState.IsValid)
+			{
+				resultado.Estado = "ERROR";
+				resultado.Mensaje = "Modelo no válido";
+				return StatusCode(400, resultado);
+			}
+			try
+			{
+				var asistencias = mapper.Map<List<AsistenciaRegistro>>(asistenciaDTO);
+				resultado = repositorioAsistencia.GrabaAsistencia(asistencias); 
+				return StatusCode(200, resultado);
+			}
+			catch (Exception ex)
+			{
+				resultado.Estado = "ERROR";
+				resultado.Mensaje = ex.Message;
+				return StatusCode(500, resultado);
+			}
+		}
 	}
 }

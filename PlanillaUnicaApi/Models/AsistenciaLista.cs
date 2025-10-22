@@ -38,6 +38,9 @@
 		public Boolean Sab_Status { get; set; }
 		public Boolean Dom_Status { get; set; }
 
+		public decimal Rhsis_H50 { get; set; } 
+		public decimal Rhsis_H100 { get; set; }
+		public decimal Rhsis_Atraso { get; set; }
 		public string Observacion { get; set; } = string.Empty;
 
 	}

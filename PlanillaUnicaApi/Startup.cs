@@ -59,6 +59,8 @@ namespace PlanillaUnicaApi
 			{
 				configuration.CreateMap<Rh_DotacionDto, Rh_Dotacion>();
 				configuration.CreateMap<Rh_Dotacion, Rh_DotacionDto>();
+				configuration.CreateMap<AsistenciaRegistroDto, AsistenciaRegistro>();
+				configuration.CreateMap<AsistenciaRegistro, AsistenciaRegistroDto>();
 
 
 
