@@ -3,6 +3,8 @@ using PlanillaUnicaApi.Repository;
 using PlanillaUnicaApi.Repository.IRepository;
 using PlanillaUnicaApi.Models;
 using PlanillaUnicaApi.Models.Dto;
+using PlanillaUnicaApi.Models.Options;
+using PlanillaUnicaApi.Services;
 
 namespace PlanillaUnicaApi
 {
@@ -54,6 +56,12 @@ namespace PlanillaUnicaApi
 			services.AddScoped<IRepositorioReferencia1, RepositorioReferencia1>();
 			services.AddScoped<IRepositorioReferencia2, RepositorioReferencia2>();
 			services.AddScoped<IRepositorioAsistencia, RepositorioAsistencia>();
+			services.AddScoped<IRepositorioInformeAsistencia, RepositorioInformeAsistencia>();
+
+			// Configurar SMTP Options
+			services.Configure<SmtpOptions>(Configuration.GetSection("Smtp"));
+			services.AddScoped<IEmailService, EmailService>();
+			services.AddScoped<IExcelService, ExcelService>();
 
 			services.AddAutoMapper(configuration =>
 			{
@@ -61,6 +69,8 @@ namespace PlanillaUnicaApi
 				configuration.CreateMap<Rh_Dotacion, Rh_DotacionDto>();
 				configuration.CreateMap<AsistenciaRegistroDto, AsistenciaRegistro>();
 				configuration.CreateMap<AsistenciaRegistro, AsistenciaRegistroDto>();
+				configuration.CreateMap<Rh_Informe_AsistenciaDto, Rh_Informe_Asistencia>();
+				configuration.CreateMap<Rh_Informe_Asistencia, Rh_Informe_AsistenciaDto>();
 
 
 
