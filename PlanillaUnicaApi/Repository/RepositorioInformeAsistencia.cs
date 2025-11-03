@@ -48,5 +48,21 @@ namespace PlanillaUnicaApi.Repository
             }
         }
 
+        public List<Rh_Informe_Salida_He> ObtieneInformeAtraso(Rh_Informe_Asistencia informe)
+        {
+            string spName = "SP_RH_INFORME_EXCEL_ATRASO";
+            using (var conexion = new SqlConnection(connectionString))
+            {
+                DynamicParameters dynamicParameters = new DynamicParameters();
+                // Adding Input parameters.
+                dynamicParameters.Add("@GENCENCOS_ID", informe.CentroCosto);
+                dynamicParameters.Add("@FECHA_INICIO", informe.FechaInicio);
+                dynamicParameters.Add("@FECHA_TERMINO", informe.FechaTermino);
+                var atrasos = conexion.Query<Rh_Informe_Salida_He>(spName, dynamicParameters, commandType: CommandType.StoredProcedure);
+
+                return atrasos.ToList();
+            }
+        }
+
     }
 }

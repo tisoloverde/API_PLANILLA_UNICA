@@ -10,5 +10,6 @@ namespace PlanillaUnicaApi.Models.Options
         public string FromEmail { get; set; } = string.Empty;
         public string FromName { get; set; } = string.Empty;
         public int Timeout { get; set; }
+        public bool ValidateCertificate { get; set; } = true;
     }
 }

@@ -43,6 +43,13 @@ namespace PlanillaUnicaApi.Services
                 using var client = new SmtpClient();
                 client.Timeout = _smtpOptions.Timeout;
                 
+                // Configurar validación de certificado SSL basada en configuración
+                if (!_smtpOptions.ValidateCertificate)
+                {
+                    client.ServerCertificateValidationCallback = (s, c, h, e) => true;
+                    _logger.LogWarning("Validación de certificados SSL deshabilitada para SMTP");
+                }
+                
                 // Para puerto 587, usar STARTTLS
                 await client.ConnectAsync(_smtpOptions.Host, _smtpOptions.Port, SecureSocketOptions.StartTls);
                 await client.AuthenticateAsync(_smtpOptions.User, _smtpOptions.Password);

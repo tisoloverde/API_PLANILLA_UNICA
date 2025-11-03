@@ -107,6 +107,26 @@ namespace PlanillaUnicaApi.Controllers
                             logger.LogInformation($"Generado informe HE100 con {resultados100.Count} registros");
                         }
                     }
+                    else if(detalle.TipoInforme.Equals(3)) // Atrasos
+                    {
+                        List<Rh_Informe_Salida_He> resultadosAtrasos = repositorioInformeAsistencia.ObtieneInformeAtraso(informes);
+                        
+                        if (resultadosAtrasos?.Count > 0)
+                        {
+                            var excelData = excelService.GenerateExcelReport(resultadosAtrasos, "ATRASOS", informeAsistenciaDto.FechaInicio, informeAsistenciaDto.FechaTermino);
+                            var fileName = $"atrasos_{informeAsistenciaDto.FechaInicio.Replace("/", "")}_{informeAsistenciaDto.FechaTermino.Replace("/", "")}.xlsx";
+                            
+                            attachments.Add(new EmailAttachment
+                            {
+                                Content = excelData,
+                                FileName = fileName,
+                                ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                            });
+                            
+                            hasReports = true;
+                            logger.LogInformation($"Generado informe ATRASOS con {resultadosAtrasos.Count} registros");
+                        }
+                    }
                 }
 
                 // Enviar correo electrónico si hay informes generados
