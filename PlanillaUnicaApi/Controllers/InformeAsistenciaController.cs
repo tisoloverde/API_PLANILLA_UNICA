@@ -127,6 +127,28 @@ namespace PlanillaUnicaApi.Controllers
                             logger.LogInformation($"Generado informe ATRASOS con {resultadosAtrasos.Count} registros");
                         }
                     }
+                    else if (detalle.TipoInforme.Equals(4)) // Faltas y Permisos
+                    {
+                        List<Rh_Informe_Falta_Permiso> resultadosFaltasPermisos = repositorioInformeAsistencia.ObtieneInformeFaltasPermisos(informes);
+
+                        if (resultadosFaltasPermisos?.Count > 0)
+                        {
+                            var excelData = excelService.GenerateExcelReport(resultadosFaltasPermisos, "FALTAS_PERMISOS", informeAsistenciaDto.FechaInicio, informeAsistenciaDto.FechaTermino);
+                            var fileName = $"faltas_permisos_{informeAsistenciaDto.FechaInicio.Replace("/", "")}_{informeAsistenciaDto.FechaTermino.Replace("/", "")}.xlsx";
+
+                            attachments.Add(new EmailAttachment
+                            {
+                                Content = excelData,
+                                FileName = fileName,
+                                ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                            });
+
+                            hasReports = true;
+                            logger.LogInformation($"Generado informe FALTAS_PERMISOS con {resultadosFaltasPermisos.Count} registros");
+                        }
+                    }
+
+
                 }
 
                 // Enviar correo electrónico si hay informes generados
