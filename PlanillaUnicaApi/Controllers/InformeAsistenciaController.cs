@@ -148,24 +148,92 @@ namespace PlanillaUnicaApi.Controllers
                         }
                     }
 
+                    else if (detalle.TipoInforme.Equals(5)) // General Mensual
+                    {
+                        List<Rh_Informe_General_Mensual> resultadosGeneralMensual = repositorioInformeAsistencia.ObtieneInformeGeneralMensual(informes);
+
+                        if (resultadosGeneralMensual?.Count > 0)
+                        {
+                            var excelData = excelService.GenerateExcelReport(resultadosGeneralMensual, "GENERAL_MENSUAL", informeAsistenciaDto.Periodo);
+                            var fileName = $"general_mensual_{informeAsistenciaDto.Periodo.Replace("/", "")}.xlsx";
+
+                            attachments.Add(new EmailAttachment
+                            {
+                                Content = excelData,
+                                FileName = fileName,
+                                ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                            });
+
+                            hasReports = true;
+                            logger.LogInformation($"Generado informe GENERAL_MENSUAL con {resultadosGeneralMensual.Count} registros");
+                        }
+                    }
+
+                    else if (detalle.TipoInforme.Equals(6)) // Validacion Mensual
+                    {
+                        List<Rh_Informe_Validacion_Mensual> resultadosValidacionMensual = repositorioInformeAsistencia.ObtieneInformeValidacionMensual(informes);
+
+                        if (resultadosValidacionMensual?.Count > 0)
+                        {
+                            var excelData = excelService.GenerateExcelReport(resultadosValidacionMensual, "VALIDACION_MENSUAL", informeAsistenciaDto.Periodo);
+                            var fileName = $"validacion_mensual_{informeAsistenciaDto.Periodo.Replace("/", "")}.xlsx";
+
+                            attachments.Add(new EmailAttachment
+                            {
+                                Content = excelData,
+                                FileName = fileName,
+                                ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                            });
+
+                            hasReports = true;
+                            logger.LogInformation($"Generado informe VALIDACION_MENSUAL con {resultadosValidacionMensual.Count} registros");
+                        }
+                    }
+
+
 
                 }
 
                 // Enviar correo electrónico si hay informes generados
                 if (hasReports && !string.IsNullOrEmpty(informeAsistenciaDto.Email))
                 {
-                    var subject = $"Informes de Asistencia - Período {informeAsistenciaDto.FechaInicio} al {informeAsistenciaDto.FechaTermino}";
+                    // Determinar el período a mostrar
+                    string periodoTexto = !string.IsNullOrEmpty(informeAsistenciaDto.Periodo) 
+                        ? informeAsistenciaDto.Periodo 
+                        : $"{informeAsistenciaDto.FechaInicio} al {informeAsistenciaDto.FechaTermino}";
+                    
+                    var subject = $"Informes de Asistencia - Período {periodoTexto}";
                     var body = $@"
                         <html>
                         <body>
                             <h2>Informes de Asistencia</h2>
-                            <p>Estimado/a,</p>
-                            <p>Se adjuntan los informes de asistencia solicitados para el período del <strong>{informeAsistenciaDto.FechaInicio}</strong> al <strong>{informeAsistenciaDto.FechaTermino}</strong>.</p>
-                            <p><strong>Centro de Costo:</strong> {informeAsistenciaDto.CentroCosto}</p>
-                            <p><strong>Archivos generados:</strong> {attachments.Count}</p>
+                            <p>Estimado/a {informes.UsuarioGenera},</p>
+                            <p>Se adjuntan los informes de asistencia solicitados.</p>
+                            <br/>
+                            <table style='border-collapse: collapse;'>
+                                <tr>
+                                    <td style='padding: 8px; font-weight: bold;'>Período:</td>
+                                    <td style='padding: 8px;'>{periodoTexto}</td>
+                                </tr>
+                                <tr>
+                                    <td style='padding: 8px; font-weight: bold;'>Centro de Costo:</td>
+                                    <td style='padding: 8px;'>{informes.CentroCostoDescripcion}</td>
+                                </tr>
+                                <tr>
+                                    <td style='padding: 8px; font-weight: bold;'>Fecha de Generación:</td>
+                                    <td style='padding: 8px;'>{DateTime.Now:dd/MM/yyyy HH:mm}</td>
+                                </tr>
+                                <tr>
+                                    <td style='padding: 8px; font-weight: bold;'>Archivos Adjuntos:</td>
+                                    <td style='padding: 8px;'>{attachments.Count}</td>
+                                </tr>
+                            </table>
+                            <br/>
+                            <p><strong>Archivos generados:</strong></p>
                             <ul>
                                 {string.Join("", attachments.Select(a => $"<li>{a.FileName}</li>"))}
                             </ul>
+                            <br/>
                             <p>Saludos cordiales,<br/>Sistema de Gestión Administrativa SOLOVERDE S.A.</p>
                         </body>
                         </html>";
